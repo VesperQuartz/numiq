@@ -2,6 +2,12 @@
 
 Numqi is a web base app that helps student excel in math . This web app provider student with practice Questions for various topic like Algebra, Word problems, Calculus and Geometry.
 
+## Demo
+
+
+https://github.com/user-attachments/assets/5f072e7b-0d94-46ee-b33d-1b9d891a7ddf
+
+
 ##  Database
 
  The database used for this project is SQLite, a self-contained, file-based relational database system. This choice was made due to its simplicity, ease of use, and low overhead, making it an ideal fit for a web-based application like Numqi. The database design consists of multiple tables, including one for storing questions, another for storing answer options, and a third for keeping track of user attempts and scores like a leader board. This allows for efficient data retrieval and manipulation when generating new questions or updating user records.
