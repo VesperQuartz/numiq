@@ -1,36 +1,19 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Introduction
 
-## Getting Started
+Numqi is a web base app that helps student excel in math . This web app provider student with practice Questions for various topic like Algebra, Word problems, Calculus and Geometry.
 
-First, run the development server:
+##  Database
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+ The database used for this project is SQLite, a self-contained, file-based relational database system. This choice was made due to its simplicity, ease of use, and low overhead, making it an ideal fit for a web-based application like Numqi. The database design consists of multiple tables, including one for storing questions, another for storing answer options, and a third for keeping track of user attempts and scores like a leader board. This allows for efficient data retrieval and manipulation when generating new questions or updating user records.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Model (GPT -40)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The AI Model used for this project is Open AI's GPT-40, a powerful language model capable of generating high-quality text. This model was chosen for its ability to understand and process natural language, allowing it to generate math questions that are both relevant and challenging for students. The model is trained on a vast dataset of math problems and solutions, enabling it to learn patterns and relationships between mathematical concepts. When a student answers a question incorrectly, the model is prompted to generate a new question that is similar in context and difficulty to the previous one, but with slight variations to ensure the student is exposed to different perspectives and approaches. This process allows Numqi to provide an endless supply of practice questions, catering to the individual needs of each student and helping them to build a strong foundation in math. We also use the model to explain questions the user get wrong by providing a detailed step-by-step solution, allowing students to understand where they went wrong and how to improve. This feature is particularly useful for students who require additional support and want to learn from their mistakes. The GPT-40 model's ability to generate explanations in a clear and concise manner makes it an invaluable resource for students, providing them with a comprehensive learning experience that extends beyond mere practice questions.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Stack
 
-## Learn More
+* Next.js
+* Sqlite - (turso)
+* Tailwindcss
+* OpenAi - GPT-40
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
