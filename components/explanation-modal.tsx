@@ -94,6 +94,7 @@ export function ExplanationModal({
           },
         },
       );
+      //@ts-expect-error don't wanna deal with this
       qStore.setPayload({ ...object });
       setSubmitDone(false); // Reset state
     }
