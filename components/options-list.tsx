@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MathJax, MathJaxContext } from "better-react-mathjax";
 import { Skeleton } from "./ui/skeleton";
 
 interface OptionsListProps {

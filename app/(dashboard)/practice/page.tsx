@@ -140,7 +140,7 @@ export default function PracticePage() {
               onSelectTopic={handleTopicSelection}
             />
           ) : (
-            <MathJax inline hideUntilTypeset={"first"}>
+            <MathJax dynamic inline hideUntilTypeset={"first"}>
               <div className="flex flex-col">
                 <div className="space-y-6">
                   <QuestionDisplay
