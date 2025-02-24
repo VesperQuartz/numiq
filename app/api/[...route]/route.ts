@@ -7,7 +7,7 @@ import { zValidator } from "@hono/zod-validator";
 import z from "zod";
 import { leaderBoardTable, questionTable, userTable } from "@/app/schema";
 import { db } from "@/lib/database";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, asc } from "drizzle-orm";
 import { to } from "await-to-ts";
 import argon2 from "argon2";
 
@@ -339,7 +339,7 @@ app.get("/leaderboard", async (c) => {
       })
       .from(leaderBoardTable)
       .leftJoin(userTable, eq(leaderBoardTable.userId, userTable.id))
-      .orderBy(leaderBoardTable.points),
+      .orderBy(asc(leaderBoardTable.points)),
   );
   if (error) {
     console.error(error.message);
