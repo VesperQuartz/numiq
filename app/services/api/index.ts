@@ -12,7 +12,6 @@ export const register = async ({ username, password }: InsertUser) => {
       .json<Session & { message: string }>(),
   );
   if (resError instanceof HTTPError) {
-    console.log(resError);
     throw await resError.response.json();
   }
   return response;
@@ -27,7 +26,6 @@ export const login = async ({ username, password }: InsertUser) => {
       .json<Session & { message: string }>(),
   );
   if (resError instanceof HTTPError) {
-    console.log(resError);
     throw await resError.response.json();
   }
   return response;
@@ -42,7 +40,6 @@ export const addPoints = async () => {
       .json<{ message: string }>(),
   );
   if (error instanceof HTTPError) {
-    console.log(error);
     throw await error.response.json();
   }
   return response;
@@ -53,7 +50,6 @@ export const leaderboard = async () => {
     ky.get("/api/leaderboard").json<Leaderboard>(),
   );
   if (error instanceof HTTPError) {
-    console.log(error);
     throw await error.response.json();
   }
   return response;
@@ -76,7 +72,6 @@ export const saveQuestion = async ({
       .json<Leaderboard>(),
   );
   if (error instanceof HTTPError) {
-    console.log(error);
     throw await error.response.json();
   }
   return response;

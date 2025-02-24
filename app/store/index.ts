@@ -4,9 +4,11 @@ export type Question =
   | Partial<{
       question: string;
       options: string[];
-      answer: "A" | "B" | "C" | "D";
+      answer: string;
+      explanation: string;
     }>
   | undefined;
+
 type QuestionStore = {
   payload: Question;
   setPayload: (payload: Question) => void;

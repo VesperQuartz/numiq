@@ -19,10 +19,10 @@ export function OptionsList({
     return (
       <>
         <div className="space-y-3">
-          <Skeleton className="w-[450px] h-16 bg-gray-500" />
-          <Skeleton className="w-[450px] h-16 bg-gray-500" />
-          <Skeleton className="w-[450px] h-16 bg-gray-500" />
-          <Skeleton className="w-[450px] h-16 bg-gray-500" />
+          <Skeleton className="w-full min-h-16 bg-gray-500" />
+          <Skeleton className="w-full min-h-16 bg-gray-500" />
+          <Skeleton className="w-full min-h-16 bg-gray-500" />
+          <Skeleton className="w-full min-h-16 bg-gray-500" />
         </div>
       </>
     );

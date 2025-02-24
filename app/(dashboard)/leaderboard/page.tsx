@@ -4,7 +4,6 @@ import { useGetLeaderboard } from "@/app/hooks/api";
 
 const LeaderboardPage = () => {
   const leaderboard = useGetLeaderboard();
-  console.log(leaderboard.data);
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
       <div className="pt-16 flex items-center justify-center p-4 min-h-screen">

@@ -1,5 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useChat } from "ai/react";
-import { experimental_useObject as useObject } from "ai/react";
 import { MathJax } from "better-react-mathjax";
 import { Button } from "./ui/button";
 
@@ -13,8 +13,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import { z } from "zod";
-import { useSaveQuestion } from "@/app/hooks/api";
+
+import {
+  useGenerateNew,
+  useOptions,
+  useSaveQuestion,
+  useSolve,
+} from "@/app/hooks/api";
 import { useQueryState } from "nuqs";
 import { useToast } from "@/hooks/use-toast";
 import { useQuestionStore } from "@/app/store";
@@ -44,47 +49,54 @@ export function ExplanationModal({
     },
   });
 
+  const gen1 = useGenerateNew();
+  const gen2 = useSolve();
+  const gen3 = useOptions();
   const saveQ = useSaveQuestion();
   const qStore = useQuestionStore();
 
-  const {
-    object,
-    submit,
-    isLoading: newQuestionLoading,
-  } = useObject({
-    api: "/api/new",
-    schema: z.object({
-      question: z
-        .string()
-        .describe(`A well formed maths question similar to ${question}`),
-      options: z
-        .array(z.string())
-        .length(4)
-        .describe(
-          "Four options for the question. The correct answer must be included among them.",
-        ),
-      answer: z
-        .enum(["A", "B", "C", "D"])
-        .describe(
-          "The correct answer's letter (A, B, C, or D), matching one of the provided options.",
-        ),
-    }),
-  });
   const [submitDone, setSubmitDone] = React.useState(false);
 
-  const submitWithCallback = (question: string) => {
-    submit(question);
-    setSubmitDone(true); // Set state when submit is done
-  };
   const { toast } = useToast();
 
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+
   React.useEffect(() => {
-    if (submitDone && object) {
+    buttonRef.current?.click();
+    handleSubmit(undefined, {
+      allowEmptySubmit: true,
+    });
+  }, [handleSubmit]);
+
+  React.useEffect(() => {
+    if (gen1.object?.question) {
+      gen2.submit(gen1.object.question);
+    }
+  }, [gen1.object?.question]);
+
+  React.useEffect(() => {
+    if (gen2.object?.answer) {
+      gen3.submit(gen2.object.answer);
+      setSubmitDone(true);
+    }
+  }, [gen2.object?.answer]);
+
+  const finalQ = React.useMemo(
+    () => ({
+      ...gen1?.object,
+      ...gen2.object,
+      ...gen3.object,
+    }),
+    [gen3.object?.options],
+  );
+
+  React.useEffect(() => {
+    if (submitDone && finalQ.options) {
       saveQ.mutate(
         {
           type,
-          answer: object?.answer ?? "",
-          question: object?.question ?? "",
+          answer: finalQ?.answer ?? "",
+          question: finalQ?.question ?? "",
         },
         {
           onSuccess: () => {
@@ -95,33 +107,10 @@ export function ExplanationModal({
         },
       );
       //@ts-expect-error don't wanna deal with this
-      qStore.setPayload({ ...object });
+      qStore.setPayload({ ...finalQ });
       setSubmitDone(false); // Reset state
     }
-  }, [
-    qStore,
-    submitDone,
-    object?.answer,
-    object?.question,
-    saveQ,
-    type,
-    object,
-    toast,
-  ]);
-
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
-
-  React.useEffect(() => {
-    buttonRef.current?.click();
-    console.log("I was clicked!");
-    handleSubmit(undefined, {
-      allowEmptySubmit: true,
-    });
-  }, [handleSubmit]);
-
-  console.log("LOAD", isLoading);
-  console.log("NRW-LOAD", newQuestionLoading);
-  console.log("OBJ", object);
+  }, [finalQ?.options]);
 
   return (
     <Dialog open={open}>
@@ -154,13 +143,13 @@ export function ExplanationModal({
           <div className="flex justify-end gap-2">
             <Button
               onClick={() => {
-                submitWithCallback(question!);
+                gen1.submit(question);
               }}
-              disabled={isLoading || newQuestionLoading || saveQ.isPending}
+              disabled={gen1.isLoading || gen2.isLoading || gen3.isLoading}
             >
               Generate
             </Button>
-            {object && (
+            {finalQ.options && (
               <Button
                 onClick={() => {
                   onClose();

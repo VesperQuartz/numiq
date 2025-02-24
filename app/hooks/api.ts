@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { experimental_useObject as useObject } from "ai/react";
 import {
   addPoints,
   leaderboard,
@@ -7,6 +8,11 @@ import {
   saveQuestion,
 } from "../services/api";
 import { InsertUser } from "../schema";
+import {
+  MathQuestionGenSchema,
+  MathQuestionOptionSchema,
+  MathQuestionSolveSchema,
+} from "../schema/index";
 
 export const useRegister = () => {
   return useMutation({
@@ -55,5 +61,33 @@ export const useSaveQuestion = () => {
         answer,
         type,
       }),
+  });
+};
+
+export const useGenerate = () => {
+  return useObject({
+    api: "/api/generate-question",
+    schema: MathQuestionGenSchema,
+  });
+};
+
+export const useGenerateNew = () => {
+  return useObject({
+    api: "/api/generate-new",
+    schema: MathQuestionGenSchema,
+  });
+};
+
+export const useSolve = () => {
+  return useObject({
+    api: "/api/solve-questions",
+    schema: MathQuestionSolveSchema,
+  });
+};
+
+export const useOptions = () => {
+  return useObject({
+    api: "/api/generate-options",
+    schema: MathQuestionOptionSchema,
   });
 };

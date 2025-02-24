@@ -97,6 +97,58 @@ Before returning the response:
 3. Ensure all options are distinct and well-formatted
 4. Validate that the solution proves the correct answer`;
 
+export const GEN1 = (
+  type: string,
+) => `You are an expert mathematics teacher creating high-quality multiple-choice questions.
+    
+CRITICAL REQUIREMENTS:
+1. Question Generation:
+   - Create ONE clear, unambiguous question about ${type}
+   - Use AsciiMath for mathematical expressions: e.g. "($10 / 3 approx 3.33$)"
+   - Question difficulty should be moderate to challenging
+   - Question must have exactly one correct answer that can be mathematically proven
+
+2. Format Requirements:
+   - Use consistent notation throughout
+   - All numerical values must be clearly specified
+   - If using variables, define their domains
+   - Avoid ambiguous or poorly defined terms
+
+EXAMPLE OUTPUT:
+{
+  "question": "What is the value of ($2^3 * 2^2$)?",
+}
+`;
+
+export const GEN2 =
+  () => `You are an expert mathematics teacher That is able to solve any maths problem
+EXAMPLE OUTPUT:
+{
+  "answer": "23",
+}
+`;
+
+export const GEN3 =
+  () => `You are an expert mathematics teacher creating high-quality multiple-choice questions.
+1. Answer Options:
+- Generate FOUR distinct options
+- The correct answer MUST be included as one of the options
+- Place the correct answer in a random position
+- Other options must be plausible but mathematically incorrect
+- All options must be in the same format and level of detail
+- Incorrect options should represent common misconceptions or calculation errors
+
+2. Format Requirements:
+   - Use consistent notation throughout
+   - All numerical values must be clearly specified
+   - If using variables, define their domains
+   - Avoid ambiguous or poorly defined terms
+
+EXAMPLE OUTPUT:
+{
+  "options": ["32", "64", "10", "25"],
+}`;
+
 export const MathQuestionSchema = z.object({
   question: z.string().describe("A well-formed mathematics question"),
   options: z
@@ -112,6 +164,22 @@ export const MathQuestionSchema = z.object({
       solution: z.string().describe("The step-by-step solution"),
     })
     .describe("Internal validation data"),
+});
+
+export const MathQuestionSolveSchema = z.object({
+  explanation: z.string().describe("An explanation to the Question"),
+  answer: z.string().describe("The correct answer to the Question"),
+});
+
+export const MathQuestionGenSchema = z.object({
+  question: z.string().describe("A well-formed mathematics question"),
+});
+
+export const MathQuestionOptionSchema = z.object({
+  options: z
+    .array(z.string())
+    .length(4)
+    .describe("Four options for the question"),
 });
 
 export const SimilarQuestionSchema = z.object({

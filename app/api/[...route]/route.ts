@@ -23,7 +23,13 @@ import {
   setSessionTokenCookie,
 } from "@/lib/lucia";
 import {
+  GEN1,
+  GEN2,
+  GEN3,
+  MathQuestionGenSchema,
+  MathQuestionOptionSchema,
   MathQuestionSchema,
+  MathQuestionSolveSchema,
   SimilarQuestionSchema,
   SYSTEM,
   SYSTEM2,
@@ -88,9 +94,6 @@ app.post(
     const token = generateSessionToken();
     const session = await createSession(token, data[0].id);
     await setSessionTokenCookie(token, session.expiresAt);
-
-    console.log(token);
-    console.log(session);
 
     return c.json({
       message: "Account created successfully",
@@ -168,7 +171,64 @@ app.post("/questions", zValidator("json", z.string()), async (c) => {
     schema: MathQuestionSchema,
     system: SYSTEM(type),
   });
-  console.log(object);
+  return c.json(object);
+});
+
+app.post("/generate-question", zValidator("json", z.string()), async (c) => {
+  const messages = await c.req.json();
+  const session = await getCurrentSession();
+  if (!session.user) {
+    return c.json({ message: "Unauthorized" }, 401);
+  }
+  const type = match(messages)
+    .with("algebraic-equations", () => "algebraic equations problems")
+    .with("geometry-problems", () => "geometry  equations problems")
+    .with("word-problems", () => "word problems")
+    .otherwise(() => "");
+
+  const { object } = await generateObject({
+    model: openai("gpt-4o-2024-11-20"),
+    prompt: `Generate a unique and challenging mathematics question on ${type}.`,
+    schemaName: "Maths",
+    temperature: 0.7, // Lower temperature for more reliable outputs
+    schema: MathQuestionGenSchema,
+    system: GEN1(type),
+  });
+  return c.json(object);
+});
+
+app.post("/solve-questions", zValidator("json", z.string()), async (c) => {
+  const messages = await c.req.json();
+  const session = await getCurrentSession();
+  if (!session.user) {
+    return c.json({ message: "Unauthorized" }, 401);
+  }
+  const { object } = await generateObject({
+    model: openai("gpt-4o-2024-11-20"),
+    prompt: `Solve this math question ${messages}`,
+    schemaName: "Maths",
+    schema: MathQuestionSolveSchema,
+    system: GEN2(),
+  });
+  return c.json(object);
+});
+
+app.post("/generate-options", zValidator("json", z.string()), async (c) => {
+  const messages = await c.req.json();
+  const session = await getCurrentSession();
+  if (!session.user) {
+    return c.json({ message: "Unauthorized" }, 401);
+  }
+
+  const { object } = await generateObject({
+    model: openai("gpt-4o-2024-11-20"),
+    prompt: `The answer to a math question is ${messages}. generate more answer similar to it`,
+    schemaName: "Maths",
+    temperature: 0.8, // Lower temperature for more reliable outputs
+    schema: MathQuestionOptionSchema,
+    system: GEN3(),
+  });
+  console.log("option-gen", object);
   return c.json(object);
 });
 
@@ -200,6 +260,25 @@ app.post("/new", async (c) => {
     prompt: `Analyze the following question and generate a new one that tests the same concept but with different numbers, context, or approach:
     Original question: ${JSON.stringify(question)}`,
     system: SYSTEM2(),
+  });
+  return c.json(object);
+});
+
+app.post("/generate-new", async (c) => {
+  const question = await c.req.json();
+  const { object } = await generateObject({
+    model: openai("gpt-4o-2024-11-20"),
+    schemaName: "Maths",
+    temperature: 0.9,
+    schema: MathQuestionGenSchema,
+    prompt: `Analyze the following question and generate a new one that tests the same mathematical concept but with different numbers, context, or approach:
+    Original question: ${question}`,
+    system: `You are an expert mathematics teacher specializing in adaptive learning. Your goal is to help students deeply understand mathematical concepts by generating practice questions that maintain the core learning objective while varying the presentation and numbers.
+CORE PRINCIPLES:
+- Focus on understanding over memorization
+- Maintain consistent difficulty level with the original question
+- Preserve the fundamental concept being tested
+- Vary superficial elements to ensure genuine understanding`,
   });
   return c.json(object);
 });
