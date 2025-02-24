@@ -120,14 +120,6 @@ export default function PracticePage() {
     <div className="flex pt-20 items-center justify-center p-4 min-h-[calc(100vh-7rem)]">
       <div className="max-w-4xl w-full space-y-8 bg-white bg-opacity-10 rounded-xl shadow-2xl overflow-hidden backdrop-blur-md">
         <div className="bg-indigo-600 bg-opacity-75 p-6">
-          <Button
-            className="bg-black"
-            onClick={() => {
-              gen1.submit(type);
-            }}
-          >
-            Click Me
-          </Button>
           <h1 className="text-3xl font-bold text-center text-white">
             NumiQ Practice
           </h1>
